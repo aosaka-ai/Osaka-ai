@@ -13,7 +13,10 @@ except:
     st.stop()
 
 # 2. تعريف الموديل وشخصية Osaka AI
-model = genai.GenerativeModel('gemini-pro')
+# model = genai.GenerativeModel('gemini-pro')
+# بدلاً من السطر القديم، استخدم هذا التنسيق المباشر
+model = genai.GenerativeModel('models/gemini-1.0-pro')
+
 
 system_instruction = """
 أنت 'Osaka AI' - المساعد الذكي لفريق الـ IT Operations في البنك. 
