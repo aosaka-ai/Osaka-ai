@@ -14,8 +14,8 @@ except:
 
 # 2. تعريف الموديل وشخصية Osaka AI
 # model = genai.GenerativeModel('gemini-1.5-flash')
-# استخدم هذا السطر فقط
-model = genai.GenerativeModel('gemini-pro')
+# model = genai.GenerativeModel('gemini-pro')
+model = genai.GenerativeModel('models/gemini-1.0-pro-001')
 
 system_instruction = """
 أنت 'Osaka AI' - المساعد الذكي لفريق الـ IT Operations في البنك. 
