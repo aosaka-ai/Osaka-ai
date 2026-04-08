@@ -2,6 +2,7 @@ import streamlit as st
 import google.generativeai as genai
 
 # 1. إعداد مفتاح الربط (هتحتاج تجيب API Key مجاني من Google AI Studio)
+api_key = st.secrets["GOOGLE_API_KEY"]
 genai.configure(api_key="YOUR_API_KEY_HERE")
 model = genai.GenerativeModel('gemini-pro')
 
