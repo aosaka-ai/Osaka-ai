@@ -6,7 +6,7 @@ genai.configure(api_key="YOUR_API_KEY_HERE")
 model = genai.GenerativeModel('gemini-pro')
 
 st.title("🤖 Osaka AI - ITOps Assistant")
-st.caption("مساعدك الذكي لإدارة الـ 488 سيرفر والخدمات البنكية")
+st.caption("مساعدك الذكي لإدارة الـ IT External App. Support سيرفر والخدمات البنكية")
 
 # 2. تعريف "شخصية" الـ AI (الـ System Instruction)
 system_prompt = """
