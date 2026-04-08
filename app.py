@@ -1,21 +1,36 @@
 import streamlit as st
 from google import genai
 from google.genai import types
+from tenacity import retry, stop_after_attempt, wait_exponential # 1. استيراد المكتبة
 
-# 1. إعدادات الصفحة
+# إعدادات الصفحة
 st.set_page_config(page_title="Osaka AI", page_icon="🤖")
 
-# 2. تعريف الـ Client - لاحظ إضافة الـ API Version يدوياً للتأكد
+# تعريف الـ Client
 if "client" not in st.session_state:
     try:
         st.session_state.client = genai.Client(
             api_key=st.secrets["GOOGLE_API_KEY"],
-            http_options={'api_version': 'v1beta'} # نجبره يكلم النسخة التجريبية اللي فيها الفلاش
+            http_options={'api_version': 'v1beta'}
         )
     except Exception as e:
         st.error(f"خطأ في الـ Client: {e}")
 
-# 3. واجهة المستخدم
+# 2. حط الـ Function هنا (خارج نطاق الـ if prompt)
+@retry(
+    stop=stop_after_attempt(3), 
+    wait=wait_exponential(multiplier=1, min=4, max=10),
+    reraise=True # مهم عشان لو فشل بعد 3 محاولات يرمي الخطأ لـ streamlit
+)
+def safe_generate_content(user_input):
+    return st.session_state.client.models.generate_content(
+        model="gemini-2.0-flash", 
+        contents=user_input,
+        config=types.GenerateContentConfig(
+            system_instruction="أنت Osaka AI، مساعد تقني خبير لبنك NBE. رد بلهجة مصرية تقنية."
+        )
+    )
+
 st.title("🤖 Osaka AI")
 
 if "messages" not in st.session_state:
@@ -25,33 +40,20 @@ for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-if prompt := st.chat_input("إيه الأخبار في الـ NBE؟"):
+if prompt := st.chat_input("إيه الأخبار؟"):
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
 
     with st.chat_message("assistant"):
         try:
-            # التعديل هنا: نستخدم اسم الموديل بدون 'models/' لأن الـ Client بيضيفها تلقائياً
-            # ونضع الـ system_instruction داخل الـ config مباشرة
-            response = st.session_state.client.models.generate_content(
-                # model="gemini-2.0-flash",
-                model="gemini-1.5-flash-latest",
-                contents=prompt,
-                config=types.GenerateContentConfig(
-                    system_instruction="أنت Osaka AI، مساعد تقني خبير. رد بلهجة مصرية."
-                )
-            )
-            
+            # 3. هنا بننادي الـ Function اللي عملناها فوق
+            with st.spinner("ثواني يا هندسة، بجيب لك الرد..."):
+                response = safe_generate_content(prompt)
+                
             answer = response.text
             st.markdown(answer)
             st.session_state.messages.append({"role": "assistant", "content": answer})
             
         except Exception as e:
-            # لو الموديل لسه مش لاقيه، هنطبع الموديلات المتاحة عندك عشان نعرف السبب
-            st.error(f"خطأ: {e}")
-            if "404" in str(e):
-                st.info("جاري فحص الموديلات المتاحة لمفتاحك...")
-                models = st.session_state.client.models.list()
-                available = [m.name for m in models]
-                st.write(f"الموديلات المتاحة لك هي: {available}")
+            st.error(f"للأسف السيرفر مضغوط جداً دلوقتي، جرب كمان شوية. الخطأ: {e}")
