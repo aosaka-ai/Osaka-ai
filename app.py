@@ -35,7 +35,7 @@ if prompt := st.chat_input("إيه الأخبار في الـ NBE؟"):
             # التعديل هنا: نستخدم اسم الموديل بدون 'models/' لأن الـ Client بيضيفها تلقائياً
             # ونضع الـ system_instruction داخل الـ config مباشرة
             response = st.session_state.client.models.generate_content(
-                model="gemini-1.5-flash", 
+                model="gemini-2.0-flash", 
                 contents=prompt,
                 config=types.GenerateContentConfig(
                     system_instruction="أنت Osaka AI، مساعد تقني خبير. رد بلهجة مصرية."
