@@ -24,7 +24,7 @@ if "client" not in st.session_state:
 )
 def safe_generate_content(user_input):
     return st.session_state.client.models.generate_content(
-        model="gemini-3.0-flash",
+        model="gemini-2.0-flash",
         contents=user_input,
         config=types.GenerateContentConfig(
             system_instruction="أنت Osaka AI، مساعد تقني خبير لبنك. رد بلهجة مصرية تقنية."
