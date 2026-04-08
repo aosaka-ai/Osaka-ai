@@ -1,20 +1,23 @@
 import streamlit as st
-import google.generativeai as genai
+from google import genai
 
+# إعدادات الصفحة
 st.set_page_config(page_title="Osaka AI - ITOps", page_icon="🤖")
 
-# الربط بالـ API
+# الربط بالـ API (المكتبة الجديدة تستخدم Client)
 try:
     api_key = st.secrets["GOOGLE_API_KEY"]
-    genai.configure(api_key=api_key)
-except:
-    st.error("API Key missing!")
+    client = genai.Client(api_key=api_key)
+except Exception as e:
+    st.error(f"مشكلة في الـ API Key: {e}")
     st.stop()
 
-# التعديل الجوهري هنا: نداء الموديل بدون كلمة models/ وبدون تحديد إصدار
-model = genai.GenerativeModel('gemini-1.5-flash')
+# شخصية Osaka AI
+system_instruction = "أنت 'Osaka AI' مساعد تقني لبنك، خبير في 488 سيرفر و76 تطبيق بنكي. رد بلهجة مصرية تقنية."
 
-# نظام الدردشة البسيط
+st.title("🤖 Osaka AI")
+st.subheader("IT Operations Smart Assistant")
+
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
@@ -29,10 +32,14 @@ if prompt := st.chat_input("إيه المشكلة في السيرفرات؟"):
 
     with st.chat_message("assistant"):
         try:
-            # نداء مباشر وبسيط
-            response = model.generate_content(prompt)
+            # طريقة النداء الجديدة في المكتبة الحديثة
+            response = client.models.generate_content(
+                model="gemini-1.5-flash",
+                config={'system_instruction': system_instruction},
+                contents=prompt
+            )
+            
             st.markdown(response.text)
             st.session_state.messages.append({"role": "assistant", "content": response.text})
         except Exception as e:
-            # هنا هنطبع الخطأ كامل عشان لو فشل نعرف السبب "الحقيقي"
-            st.error(f"Error: {str(e)}")
+            st.error(f"خطأ في الربط: {str(e)}")
