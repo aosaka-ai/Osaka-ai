@@ -14,8 +14,7 @@ except:
 
 # 2. تعريف الموديل وشخصية Osaka AI
 # model = genai.GenerativeModel('gemini-pro')
-# بدلاً من السطر القديم، استخدم هذا التنسيق المباشر
-model = genai.GenerativeModel('models/gemini-1.0-pro')
+model = genai.GenerativeModel('gemini-1.5-flash-latest')
 
 
 system_instruction = """
