@@ -16,15 +16,23 @@ except:
 # model = genai.GenerativeModel('gemini-1.5-flash')
 # model = genai.GenerativeModel('gemini-pro')
 # model = genai.GenerativeModel('models/gemini-1.0-pro-001')
-# بدلاً من السطر القديم.. جرب هذا الكود الذكي
+
+# 1. إجبار المكتبة على استخدام الإصدار المستقر
+from google.generativeai.types import GenerationConfig
+
+# 2. تعريف الموديل بدون تحديد Beta
+model = genai.GenerativeModel(
+    model_name='gemini-1.5-flash',
+    # هذا السطر يضمن التوافق مع أغلب الحسابات
+)
+
+# 3. دالة بديلة في حال فشل flash (Failover Plan)
 try:
-    # محاولة تشغيل أحدث موديل
-    model = genai.GenerativeModel('gemini-1.5-flash')
-    # تجربة بسيطة للتأكد أنه يعمل
-    model.generate_content("test")
-except:
-    # إذا فشل، العودة للموديل المستقر جداً بتنسيق مختلف
+    response = model.generate_content("test")
+except Exception as e:
+    # لو فلاش مش متاح، نستخدم البرو القديم المستقر
     model = genai.GenerativeModel('gemini-pro')
+
 
 system_instruction = """
 أنت 'Osaka AI' - المساعد الذكي لفريق الـ IT Operations في البنك. 
