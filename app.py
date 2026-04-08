@@ -37,7 +37,7 @@ if prompt := st.chat_input("إيه المشكلة في السيرفرات؟"):
             # التعديل الجوهري: استخدام GenerateConfig الصحيح للمكتبة الجديدة
             # التعديل هنا: إضافة بادئة 'models/' قبل اسم الموديل
             response = client.models.generate_content(
-                model="models/gemini-1.5-flash", 
+                model="models/gemini-1.5-pro", 
                 contents=prompt,
                 config=types.GenerateContentConfig(
                     system_instruction=system_instruction,
