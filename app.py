@@ -15,7 +15,16 @@ except:
 # 2. تعريف الموديل وشخصية Osaka AI
 # model = genai.GenerativeModel('gemini-1.5-flash')
 # model = genai.GenerativeModel('gemini-pro')
-model = genai.GenerativeModel('models/gemini-1.0-pro-001')
+# model = genai.GenerativeModel('models/gemini-1.0-pro-001')
+# بدلاً من السطر القديم.. جرب هذا الكود الذكي
+try:
+    # محاولة تشغيل أحدث موديل
+    model = genai.GenerativeModel('gemini-1.5-flash')
+    # تجربة بسيطة للتأكد أنه يعمل
+    model.generate_content("test")
+except:
+    # إذا فشل، العودة للموديل المستقر جداً بتنسيق مختلف
+    model = genai.GenerativeModel('gemini-pro')
 
 system_instruction = """
 أنت 'Osaka AI' - المساعد الذكي لفريق الـ IT Operations في البنك. 
