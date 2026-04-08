@@ -27,7 +27,7 @@ def safe_generate_content(user_input):
         model="gemini-2.0-flash",
         contents=user_input,
         config=types.GenerateContentConfig(
-            system_instruction="أنت Osaka AI، مساعد تقني خبير لبنك NBE. رد بلهجة مصرية تقنية."
+            system_instruction="أنت Osaka AI، مساعد تقني خبير لبنك. رد بلهجة مصرية تقنية."
         )
     )
 
